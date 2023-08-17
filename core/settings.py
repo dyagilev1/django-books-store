@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'shop',
     'cart',
     'orders',
-
+    'fontawesomefree',
     
     'django.contrib.admin',
     'django.contrib.auth',

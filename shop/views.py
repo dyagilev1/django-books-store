@@ -62,6 +62,10 @@ def product_list(request, category_slug=None):
 
 
 def product_detail(request, id, slug):
+
+    category = None
+    categories = Category.objects.all()
+
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
     cart_product_form = CartAddProductForm()
     images = Gallery.objects.filter(product=product)
@@ -69,6 +73,8 @@ def product_detail(request, id, slug):
                                                         'product': product,
                                                         'cart_product_form': cart_product_form,
                                                         'images': images,
+                                                        'category': category,
+                                                        'categories': categories,
     })
 
 

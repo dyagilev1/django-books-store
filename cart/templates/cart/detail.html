@@ -5,78 +5,97 @@
 
 {% block content %}
 
+
+ 
+
+<!-- shopping-cart -->
 {% with total_items=cart|length %}
     {% if total_items > 0%}
-        <div class="cart__info container-fluid pt-5">
-            <div class="row px-xl-5">
-                <div class="col-lg-8 table-responsive mb-5">
-                    <table class="text-center mb-0">
-                        <tbody class="align-middle ">
-                            <h6>Кошик</h6>
+	<section class="shopping-cart">
+		<div class="container">
+			<div class="row">
+				<div class="table-responsive cart-table">
+					<table class="shop-cart">
+						<thead>
+							<tr>
+								<th class="cart-single-item text-dark">товар</th>
+								<th class="cart-price text-dark">ціна</th>
+								<th class="cart-quantity text-dark">кількість</th>
+								<th class="cart-total text-dark">усього</th>
+								<th class="cart-item-remove text-dark">видалити</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
                             {% for item in cart %}
                                 {% with product=item.product %}
-                                    <tr class="border-bottom border-top">
-                                        <td class="align-middle bg-white py-4"><a href="{{ product.get_absolute_url }}">
-                                            <img src="{% if product.image %}{{ product.image.url }}
+								<td class="cart-single-item">
+									<div class="item-img">
+										<img src="{% if product.image %}{{ product.image.url }}
                                             {% else %}{% static 'img/no_image.png' %}{% endif %}"
                                             alt="" style="width: 80px;"></a>
-                                        </td>
-                                        <td  class="align-middle bg-white">
-                                            {{ product.name }}
-                                        </td>
-                                        <form action="{% url 'cart:cart_add' product.id %}" method="post">
-                                        <td class="align-middle bg-white">
-                                            {{ item.update_quantity_form.quantity }}
-                                            {{ item.update_quantity_form.override }}
-                                        </td>
-                                        <td class="align-middle bg-white">
-                                            <button type="submit" class="btn btn-dark btn-sm" value="Update">Оновити</button>
-                                            {% csrf_token %}
-                                        </td>
-                                        </form>
-                                        <td class="align-middle bg-white">{{ item.total_price }} грн</td>
-                                        <td class="align-middle bg-white">
-                                            <form action="{% url 'cart:cart_remove' product.id %}" method="post">
-                                                <button type="submit" class="btn btn-dark btn-sm" value="delete">Видалити</button>
-                                                {% csrf_token %}
-                                            </form>
-                                        </td>
-                                    </tr>
+									</div>
+									<div class="item-name">
+										{{ product.name }}
+									</div>
+								</td><!-- cart-single-item -->
+								<td class="cart-price">
+									<span>{{ item.price }} грн</span>
+								</td><!-- cart-price -->
+                                <form action="{% url 'cart:cart_add' product.id %}" method="post">
+								<td class="cart-quantity">
+									<div class="product-quantity">
+										{{ item.update_quantity_form.quantity }}
+                                        {{ item.update_quantity_form.override }}
+                                        <button type="submit" class="btn btn-dark btn-sm" value="Update"><i class="fa-solid fa-rotate-right"></i></button>
+                                        {% csrf_token %}
+									</div>
+								</td><!-- cart-quantity -->
+								<td class="cart-total">
+									<span>{{ item.total_price }} грн</span>
+								</td><!-- cart-total -->
+								<td class="cart-item-remove">
+									<form action="{% url 'cart:cart_remove' product.id %}" method="post">
+                                        <button type="submit" class="btn btn-dark btn-sm" value="delete"><i class="fa-solid fa-x"></i></button>
+                                        {% csrf_token %}
+                                    </form>
+								</td><!-- cart-item-remove -->
+							</tr>
                                 {% endwith %}
                             {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-5 ml-2">
-                        <div class=" bg-white">
-                            <h6 class="font-weight-semi-bold p-1  border-bottom">Дані замовлення</h6>
-                        </div>
-                        <div class="card-body bg-white">
-                            <div class="d-flex justify-content-between mb-3 pt-1">
-                                <h6 class="font-weight-medium">Сума</h6>
-                                <h6 class="font-weight-medium">{{ cart.get_total_price }} грн</h6>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <h6 class="font-weight-medium">Доставка</h6>
-                                <h6 class="font-weight-medium">Безкоштовно</h6>
-                            </div>
-                        </div>
-                        <div class="card-footer border-1 bg-white">
-                            <div class="d-flex justify-content-between mt-2">
-                                <h5 class="font-weight-bold">Загальна вартість</h5>
-                                <h5 class="font-weight-bold">{{ cart.get_total_price }} грн</h5>
-                            </div>
-                            {% with total_items=cart|length %}
+							</tr>
+						</tbody>
+					</table><!--  shop cart -->
+				</div>
+						<div class="col-md-6">
+						 <div class="total-price">
+						 	<h3>Усього у кошику</h3>
+						 	<ul>
+						 		<li>
+						 			<span class="pull-left">Підсумок кошика</span>
+						 			<p class="pull-right">{{ cart.get_total_price }} грн</p>
+						 		</li>
+						 		<li>
+						 			<span class="pull-left">Доставка</span>
+						 			<p class="pull-right">Безкоштовна доставка</p>
+						 		</li>
+						 		<li class="order-total">
+						 			<span class="pull-left">Сума замовлення</span>
+						 			<p class="pull-right">{{ cart.get_total_price }} грн</p>
+						 		</li>
+						 	</ul>
+                             {% with total_items=cart|length %}
                                 {% if total_items > 0%}
                                     <a href="{% url 'orders:order_create' %}" class="btn btn-block btn btn-dark my-3 py-3">Зробити оформлення</a>
                                 {% endif %}
                             {% endwith %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+						 </div>
+						</div>
+					</div>
+				</div><!-- shipping-totalprice -->
+			</div>
+		</div><!-- container -->
+	</section><!-- shopping-cart end-->
     {% else %}
         <div class="empty_cart container-fluid p-5 border-top border-bottom">
             <div class="d-flex justify-content-center pb-2">
@@ -88,5 +107,5 @@
         </div>
     {% endif %}
 {% endwith %}
- 
+
 {% endblock content %}
